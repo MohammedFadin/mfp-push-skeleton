@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+
+    <!-- Import requireJS which loads our applicative index.js file -->
+    <script
+      data-main="js/index"
+      src="node_modules/requirejs/require.js"
+    ></script>
+    <script type="module" src="js/push.js"></script>
+
+    <title>MFP Starter - Web</title>
+    <link rel="manifest" href="js/manifest.json" />
+    <script>
+      if (navigator.serviceWorker) {
+        navigator.serviceWorker
+          .register("js/MFPPushServiceWorker.js")
+          .then(function (reg) {
+            window.pushReg = reg;
+            if (reg.installing) {
+              console.info("Service worker installing");
+            } else if (reg.waiting) {
+              console.info("Service worker installed");
+            } else if (reg.active) {
+              console.info("Service worker active");
+            }
+            if (!reg.showNotification) {
+              console.info(
+                "Notifications aren't supported on service workers."
+              );
+            }
+            // Check if push messaging is supported
+            if (!("PushManager" in window)) {
+              console.info("Push messaging isn't supported.");
+            }
+
+            if (Notification.permission === "denied") {
+              console.info("The user has blocked notifications.");
+            }
+          })
+          .catch((err) => {
+            console.error(JSON.stringify(err));
+          });
+      } else {
+        console.info("Service workers aren't supported in this browser.");
+      }
+    </script>
+  </head>
+
+  <body>
+    <div id="main">
+      <div id="main_title">Hello MobileFirst</div>
+      <div id="main_status"></div>
+      <div id="main_info"></div>
+    </div>
+
+    <div id="button_content">
+      <button id="ping_button">Ping MobileFirst Server</button>
+    </div>
+  </body>
+</html>
